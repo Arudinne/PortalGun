@@ -36,6 +36,7 @@ If you deviate from the following definitions, you will have to change the firmw
 |    3          |   13            | Dimension Rollover |
 |    4          |    4            |   Power Up         |
 |	 5	        |    7            |  Power Down        |
+|	 VOL +	        |    A3            |  Volume Up      |
 
 
 | LED | Feather 328P Pin |
