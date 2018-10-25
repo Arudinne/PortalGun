@@ -11,17 +11,19 @@
 
 /*
 ********** Required Hardware *********************
-* Adafruit Pro Trinket 5V 16MHz - http://www.adafruit.com/product/2000
-* LiPoly BackPack - http://www.adafruit.com/product/2124
-* LiPoly Battety 3.7V - http://www.adafruit.com/products/1578
+* Adafruit Feather 328P - http://www.adafruit.com/product/3458
+* Featherwing Proto - http://www.adafruit.com/product/2884
+* Short Headers Kit (Female) for Feather - https://www.adafruit.com/product/2940
+* Short Headers Kit (Male) for Feather - https://www.adafruit.com/product/3002
+* Lithium Ion Cylindrical Battery - http://www.adafruit.com/products/1781
 * Rotary Encoder - http://www.adafruit.com/products/377
 * Metal Knob - http://www.adafruit.com/products/2056
 * Quad Alphanumeric Display (Red 0.54") - http://www.adafruit.com/products/1911
 * Adafruit Audio FX Sound Board - http://www.adafruit.com/products/2210
-* 8 ohm Speaker - http://www.adafruit.com/products/1891
+* 8 ohm Speaker - http://www.adafruit.com/products/1890
 * 10mm Diffused Green LED (x4) - https://www.adafruit.com/products/844
 * 10mm Plastic Bevel LED Holder (x4) - https://www.adafruit.com/products/2171
-* 150 Ohm Resistor (x4) for LEDs
+* 56 Ohm Resistor (x4) for LEDs
 * Inductive Charging Set - 5V - https://www.adafruit.com/products/1407
 * 2.1mm Panel Mount Barrel Jack - http://www.adafruit.com/products/610
 * 9VDC Power Supply - http://www.adafruit.com/products/63
@@ -60,7 +62,8 @@ int16_t last, value;
 #define resetDimensionPin    12
 #define dimensionRolloverPin 13
 #define powerUpPin           4
-#define powerDownPin         8
+#define powerDownPin         7
+#define volUpPin             A3
 
 // FX Board output delay (ms)
 const int msDelay = 500;
@@ -94,6 +97,7 @@ void setup() {
   pinMode(dimensionRolloverPin, OUTPUT);
   pinMode(powerUpPin, OUTPUT);
   pinMode(powerDownPin, OUTPUT);
+  pinMode(volUpPin, OUTPUT);
   
   pinMode(topBulbPin, OUTPUT);
   pinMode(frontRightPin, OUTPUT);
@@ -102,8 +106,11 @@ void setup() {
   
   
   digitalWrite(frontRightPin, HIGH);
+  digitalWrite(frontRightPin, LOW);
   digitalWrite(frontLeftPin, HIGH);
+  digitalWrite(frontLeftPin, LOW);
   digitalWrite(frontCenterPin, HIGH);
+  digitalWrite(frontCenterPin, LOW);
   digitalWrite(topBulbPin, HIGH);
   
   digitalWrite(portalShootPin, HIGH);
@@ -112,8 +119,11 @@ void setup() {
   digitalWrite(dimensionRolloverPin, HIGH);
   digitalWrite(powerUpPin, HIGH);
   digitalWrite(powerDownPin, HIGH);
-  
-  
+  digitalWrite(volUpPin, HIGH);
+  delay(100);
+  digitalWrite(volUpPin, LOW);
+  delay(3000);
+  digitalWrite(volUpPin, HIGH);
   encoderSetup();
   alpha4.begin(0x70);  // pass in the address for the LED display
   
@@ -134,8 +144,11 @@ void loop() {
     delay(msDelay);
     digitalWrite(powerUpPin, HIGH);    
     digitalWrite(frontRightPin, HIGH);
+    digitalWrite(frontRightPin, LOW);
     digitalWrite(frontLeftPin, HIGH);
+    digitalWrite(frontLeftPin, LOW);
     digitalWrite(frontCenterPin, HIGH);
+    digitalWrite(frontCenterPin, LOW);
     digitalWrite(topBulbPin, HIGH);
     justWokeUp = false;
   }
@@ -171,8 +184,14 @@ void loop() {
     case ClickEncoder::Clicked:
       // Play a portal shot sound
       digitalWrite(portalShootPin, LOW);
+      digitalWrite(frontRightPin, HIGH);
+      digitalWrite(frontLeftPin, HIGH);
+      digitalWrite(frontCenterPin, HIGH);
       delay(msDelay);
-      digitalWrite(portalShootPin, HIGH);
+      digitalWrite(portalShootPin, HIGH);   
+      digitalWrite(frontRightPin, LOW);
+      digitalWrite(frontLeftPin, LOW);
+      digitalWrite(frontCenterPin, LOW);
     break;
     case ClickEncoder::DoubleClicked:
       //If you double click the button, it sets the dimension to C137
